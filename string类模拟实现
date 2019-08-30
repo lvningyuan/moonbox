@@ -1,0 +1,274 @@
+#define _CRT_SECURE_NO_WARNINGS 
+#include"iostream"
+#include"string.h"
+#include "windows.h"
+#include"assert.h"
+using namespace std;
+namespace N
+{
+	class string 
+	{
+		friend ostream& operator >>(ostream& _cin, const string& s);
+		friend ostream& operator <<(ostream& _cout, const string& s );
+	public:
+		string(const char* str ="")
+			:_size(0)
+			,_capacity(0)
+			,_str(nullptr)
+		{
+			if (str == nullptr)
+				str = "";
+			_size=(strlen(str));
+			_capacity=(_size + 1);
+			_str = (new char[_capacity + 1]);
+			
+
+		   strcpy(_str, str);
+		}
+		string(const string& s) 
+			:_str(new char[_capacity+1])
+		{
+			string tmp(s._str);
+			this->swap(tmp);
+			strcpy(_str, s._str);
+		}
+		~string()
+	     {
+			_size = 0;
+			_str[_size] = '\0';
+			_capacity = 0;
+			delete[]_str;
+			_str = nullptr;
+		 }
+		void swap(const string& s) 
+		{
+			_str = s._str;
+			_size = s._size;
+			_capacity = s._capacity;
+		}
+		void resize(size_t newsize,char c='\0') 
+		{
+			if (newsize > _capacity)//阔大可能申请内存，缩小不用释放内存
+			{
+				if (_capacity == 0)
+					_str = new char[1];
+				else
+					while(_capacity<newsize)
+				{
+					char* str = new char[1.5* _capacity];
+					strcpy(str, _str);
+					delete[]_str;
+					_str = str;
+					str = nullptr;
+				}
+				while (_size < newsize)
+				{
+					_str[_size++] = 'c';
+				}
+			}
+		}
+		void reserve(size_t n) 
+		{
+			if (n > _capacity)
+			{
+					_str = new char[n+1];
+					_capacity = n + 1;
+			}
+
+		}
+		void push_back(char c) 
+		{
+			(_str + _size) + c;
+		}
+		void pop_back(char c) 
+		{
+			assert(_str);
+			erase(c);
+		}
+		string& operator+=(const char* str) 
+		{
+			assert(str);
+			int len = strlen(str);
+			if (_capacity < _size + len)
+			{
+				char* str = new char[_capacity+len];
+				strcpy(str,_str);
+				delete[]_str;
+				_str = str;
+			}
+			for (int i = 0; i < len; i++)
+			{
+				_str[_size++] = str[i];
+			}
+			return *this;
+		}
+		string operator+ (const  string& s) 
+		{
+			char* str = new char[s._capacity + _capacity];
+			strcpy(str, _str);
+			delete[]_str;
+			_str = str;
+			strcpy(_str + _size, s._str);
+			return _str;//这里不能返回this 指针，不然改变了  + 号的左操作数
+		}
+		string operator +(const char c) 
+		{
+			if (_size == _capacity)
+			{
+				if (_capacity == 0)
+				{
+					_str = new char[1];
+					_str[_size++] = c;
+				}
+				else
+				{
+					char* str = new char[1.5*_capacity];
+					strcpy(str, _str);
+					delete[]_str;
+					_str = str;
+					_str[_size++] = c;
+				}
+				return _str;
+			}
+			else
+				_str[_size++] = c;
+			return _str;
+		}
+		bool operator==(const string& s) {}
+		bool operator!=(const string& s) {}
+		bool operator>=(const string& s) {}
+		bool operator>(const string& s) {}
+		bool operator<=(const string& s) {}
+		bool operator<(const string& s) {}
+
+		size_t size() { return _size; }
+		size_t length() { return _size; }
+		char& operator[](size_t pos) { return _str[pos]; }
+		void append(size_t n,char c) {}
+		void append(string& s) {}
+		string& insert(size_t pos, char c) 
+		{
+			assert(pos<_size);
+			if (_size == _capacity)
+			{
+				if (_capacity == 0)
+				{
+					_str = new char[1];
+				}
+				else 
+				{
+					char* str = new char[1.5* _capacity];
+					strcpy(str, _str);
+					delete[]_str;
+					_str = str;
+					_str[_size++] = c;
+					return *this;
+				}
+			}
+			else
+			{
+				_str[_size++] = c;
+			}
+			return *this;
+		}
+		string& insert(size_t pos,const char* str) 
+		{
+			int len = strlen(str);
+			while (_size + len > _capacity)
+			{
+				char *str = new char[1.5*_capacity];
+				strcpy(str,_str);
+				delete []_str;
+				_str = str;
+				for (int i = _size; i < _size + len; i++)
+				{
+					str[_size] = *str++;
+				}
+				return *this;
+			}
+		
+		}
+		string& erase(size_t pos)
+		{
+			assert(pos<_size);
+			_size--;
+			_str[pos] = '\0';
+			return *this;
+		}
+		string& erase(size_t pos,int len)
+		{
+			assert(pos+len<_size );
+			_size -= len;
+			while(len--)
+			_str[pos++] = '\0';
+		}
+		//find
+		int Find(char c) 
+		{
+			assert(_str);
+			for (int i = 0; i < _size; i++)
+			{
+				if (_str[i] == c)
+				{
+					cout << _str + i << endl;
+					return i;
+				}
+			}
+			return -1;
+		}
+		string Find(char* str)
+		{
+			int len = strlen(str);
+			assert(_str && _size> len);
+			int i = 0, j = 0;
+			int n =0;
+			while (i<_size)
+			{
+				n = i;
+				while (_str[i]==str[j] && str[j] !='\0')
+				{
+					++i;
+					++j;
+				}
+				if (str[j] == '\0')
+				{
+				    //cout << _str + n << endl;
+					return (_str + n);//完全匹配
+				}
+				else//匹配失败
+					i == n;
+					++i;
+			}
+			return NULL;
+		}
+		void print() 
+		{
+			cout << _str << endl << _capacity << endl<< _size << endl;
+		}
+	private:
+		size_t _size;
+		size_t _capacity;
+		char* _str;
+		
+		
+	};
+	ostream& operator<<(ostream& _cout, const string& s) { _cout << s._str ; return  _cout; }
+	ostream& operator>>(ostream& _cin, const string& s) { _cin >> s._str ; return  _cin; }
+}
+void Test()
+{
+//	N::string a;
+	//a.print();
+	N::string b("hello");
+	//b.print();
+	//cout << b.Find('l') << endl;
+	char c[3] = "he";
+	cout << b.Find(c) << endl;;
+}
+int main()
+{
+	
+	Test();
+	system("pause");
+	return 0;
+}
