@@ -1,0 +1,76 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include"windows.h"
+#include"stdio.h"
+#include"string.h"
+#include"assert.h"
+//1.模拟实现strncpy
+//2.模拟实现strncat
+//3.模拟实现strncmp
+
+// StrNcat 最多复制n个字节，并在结尾加‘\0’不考虑目标空间够不够
+char* StrNcat(char* dst, const char* src, size_t n)
+{
+	assert(src);
+	char* dst1 = dst;
+	while (n-- && *src)
+	{
+		*dst1++ = *src++;
+	}
+	*dst1 = '\0';
+	//本函会以‘\0’结尾
+	return dst;
+}
+//StrNcpy 傻傻的进行n 个字节的复制，不够用 NUL填充,结尾不会加 '\0'
+char* StrNcpy(char*dst, const char* src, size_t len)
+{
+	assert(src);
+	char* dst1 = dst;
+	while (len-- >= 0 && *src)//两者均未结尾
+	{
+		*dst1++ = *src++;
+	}
+	if (*src == '\0')//*src到结尾补'\0'
+	{
+		*dst == '\0';
+	}
+		return dst;
+}
+//StrNcmp跟strcmp函数很相似，只不过指定了比较的长度
+int StrNcmp(const char* a, const char* b, size_t n)
+{
+	while ((*b++ == *a++) && n--);
+	return *a - *b;
+}
+void Test()
+{
+	char a[12];
+	char b[] = "hello";
+    StrNcat(a, b, 3);
+		printf("%s\n",a);
+    StrNcpy(a,b,4);//strncpy不会给我们加'\0'的
+       printf("%s\n",a);
+	   char* d = "hello,bit";
+	   char* e = "hello,world";
+	int ret =StrNcmp(d,e,10);
+	if (ret == 0) 
+	{
+		printf("一样大\n");
+	}
+	if (ret > 0)
+		printf("d大\n");
+	else
+		printf("e大\n");
+}
+
+int main()
+{
+	Test();
+	char a[12] ;
+	char *b = "hello";
+	strncpy(a,b,3);//试探库函数 strcpy()发现strncpy不会给我们加'\0'的
+	char d[10] = {0};
+	printf("%s\n", a);
+	char * c=strncat(d, b, 4);//测试库函数发现会以\0结束
+	printf("%s\n", c);
+	system("pause");
+	return 0;
