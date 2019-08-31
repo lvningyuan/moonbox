@@ -1,0 +1,30 @@
+//构造函数方法（拷贝构造类似）
+class Solution {
+public:
+    static int  _count;//静态成员变量
+    static int _sum;
+    Solution(){_count++;_sum+=_count;}//构造方法
+//入口
+    int Sum_Solution(int n) {
+        Solution:: _count=0;//初始化静态成员变量
+        Solution:: _sum=0;
+        Solution* a=new Solution[n];
+        delete[] a;
+        a=NULL;
+        return Solution::_sum;
+    }
+};
+//定义全局变量
+int Solution::_count=0;
+int Solution::_sum=0;
+
+
+//2 逻辑运算控制递归结束
+int Sum_Solution(int n) 
+{
+	int ans = n;
+	//逻辑与的短路，使程序停下来
+	ans && ( ans+= Sum_Solution(n - 1));//当右部为1（括号内的右部为0）时，左部能确定，所以能计算出一个结果，递归返回
+	//能计算出一个结果时 返回上一层，
+	return ans;
+}
