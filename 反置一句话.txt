@@ -1,0 +1,50 @@
+
+#define _CRT_SECURE_NO_WARNINGS 1
+#include <stdio.h>
+#include "windows.h"
+void A(char * l,char *r)
+{
+	int i=0;char tmp;
+	while (l<r)
+	{
+	        tmp = *l;
+            *l =*r ;
+	        *r = tmp;
+			l++;
+			r--;
+	}
+}
+void Show(char* arr,int len )
+{
+	int i=0;
+	char *l =arr;
+	char *r =arr;
+	      while(arr[i])//
+		  {
+			  if(arr[i]==' '||arr[i]=='\0')
+			  {
+				  r--;
+			  A(l,r);//反转字符串//将内部单词反转
+			  r=2+r;//反转之后，l 右移//跳过空格
+			  l=r;
+			  }
+			  else 
+			  {
+				  r++;
+			  }
+			  i++;
+		}
+		  
+}
+int main ()
+{
+	char arr[]="student a am i";char*c=arr;int i;
+	int len=sizeof(arr)/sizeof(arr[0]);char *d=c+len-1;
+	Show(arr,len);
+	A(c,d);
+	for(i=0;i<len;i++)//i=0时打印的是一个'\0'对应的是空的,或者让i 从1开始
+		if(arr[i] != '\0')
+    printf("%c",arr[i]);
+    system("pause");
+	return 0;
+}
